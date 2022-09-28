@@ -1,36 +1,59 @@
+from dataclasses import dataclass
 import requests
 
-class Cities: 
+# Add documentation
+# Add a link to the website which specifies this link: <www.hello.com> 
+URL_GET_CITIES = "https://wft-geo-db.p.rapidapi.com/v1/geo/cities"
+
+class CitiesClient: 
 
     def _init_(self, API_key):
         self.API_key = API_key
 
-    def get_cities_data(self):
-        url = "https://wft-geo-db.p.rapidapi.com/v1/geo/cities"
-
-        querystring = {"minPopulation":"400000"}
-
-        headers = {
+    def headers(self) -> dict:
+        return {
             "X-RapidAPI-Key": self.API_key,
             "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"
         }
 
-        response_GeoDB = requests.request("GET", url, headers=headers, params=querystring)
-        response_GeoDB = response_GeoDB.json()
+    def execute(self, method: str, url: str, params: dict):
+        return requests.request(method, url, self.headers, params).json()
+    
 
-        data_GeoDB = response_GeoDB['data']
+    def get_cities_data(self, min_population: int):
+        # We are using these params because... (less verbose)
 
-        cities_data = []
+        # Todo: Move to @dataclass GetCitiesParams for cleanness
+        params = {"minPopulation":  min_population}
 
-        for data in data_GeoDB:
-            city_data = {}
+        # Execute GET request
+        response = self.execute("GET", URL_GET_CITIES, self.headers, params)
 
-            city_data['id'] = data['id']
-            city_data['name'] = data['name']
-            city_data['latitude'] = data['latitude']
-            city_data['longitude'] = data['longitude']
-            city_data['population'] = data['population']
+        # Todo: Map the request.Response to custom data Class
+        cities = []
+        for city_data in response["data"]:
+            
+            # Todo: Raise KeyError exception if expected keys are not present
+            city = City(
+                city_data["id"],
+                city_data['name'],
+                city_data['latitude'],
+                city_data['longitude'],
+                city_data['population']
+            )
 
-            cities_data.append(city_data)
+            cities.append(city)
 
-        return cities_data
+        return cities
+
+@dataclass
+class GetCitiesParams:
+    min_population: int
+
+@dataclass
+class City:
+    id: str
+    name: str
+    latitude: str
+    longitude: str
+    population: str
