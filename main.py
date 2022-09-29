@@ -1,6 +1,6 @@
 from asyncore import poll
 from nturl2path import url2pathname
-import requests
+from .service import Service
 
 def load_config():
     GeoDB_API_key = 'b29f2328d6mshfe5d6639483b6a2p166f69jsn5c93c74e7d77'
@@ -9,13 +9,11 @@ def load_config():
     password = 'postgres'
 
 
-    
-
 
     #return dataclass called config 
 
 if __name__ == '__main__':
-    pass
+    Service.run()
  
 # load config
 

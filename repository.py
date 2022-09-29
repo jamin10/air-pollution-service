@@ -1,3 +1,4 @@
+from asyncore import poll
 from curses import curs_set
 import psycopg2
 
@@ -67,8 +68,33 @@ class PostgreSqlRepository:
             if conn is not None:
                 conn.close()
         
-    def insert_data(self):
-        pass
+    def insert_data(self, pollution_data):
+        conn = None
+
+        try: 
+            with psycopg2.connect(
+                host = self.hostname,
+                dbname = self.database,
+                user = self.username, 
+                password = self.password,
+                port = self.port_id
+                ) as conn: 
+
+                with conn.cursor() as cur:
+
+                    insert_script = 'INSERT INTO cities (id, name, lat, long, population) VALUES (%s, %s, %s, %s, %s)'
+
+                    for row in pollution_data:
+                        insert_value = row
+                        cur.execute()
+
+        except Exception as error:
+            print(error)
+        finally:
+            if conn is not None:
+                conn.close()
+
+
 
 
 test = PostgreSqlRepository(hostname, database, username, password, port_id)
