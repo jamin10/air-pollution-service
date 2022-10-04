@@ -8,7 +8,6 @@ from config import load_config
 if __name__ == '__main__':
     # Load config
     config = load_config()
-    print(config)
 
  # build client 1
  # build client 2 

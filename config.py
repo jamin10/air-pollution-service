@@ -14,7 +14,7 @@ class Config:
     db_password: str
     host: str
     port_id: int
-    api_Key_geodb: str
+    api_key_geodb: str
     api_key_open_weather: str
 
     def validate(self):
@@ -31,7 +31,7 @@ class Config:
            raise ConfigError("host is not set")
         if self.port_id is None:
             raise ConfigError("port_id is not set")
-        if self.api_Key_geodb is None:
+        if self.api_key_geodb is None:
            raise ConfigError("api_Key_geodb is not set")
         if self.api_key_open_weather is None:
             raise ConfigError("api_key_open_weather is not set")
