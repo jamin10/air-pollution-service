@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 import os
 from dotenv import load_dotenv
 
@@ -19,23 +19,9 @@ class Config:
 
     def validate(self):
         # Validation to throw exception if config value is missing 
-        if self.db_name is None:
-            raise ConfigError("db_name is not set")
-        if self.db_username is None:
-            raise ConfigError("db_username is not set")
-        if self.db_password is None:
-           raise ConfigError("db_password is not set")
-        if self.db_password is None:
-           raise ConfigError("db_password is not set")
-        if self.host is None:
-           raise ConfigError("host is not set")
-        if self.port_id is None:
-            raise ConfigError("port_id is not set")
-        if self.api_key_geodb is None:
-           raise ConfigError("api_Key_geodb is not set")
-        if self.api_key_open_weather is None:
-            raise ConfigError("api_key_open_weather is not set")
-
+        for field in fields(self):
+            if getattr(self, field.name) is None:
+                raise ConfigError(f"{field.name} is not set")
         
 def load_config():
     # Create Congif dataclass from enironment variables 

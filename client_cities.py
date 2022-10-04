@@ -1,9 +1,9 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, fields
 import requests
 from config import *
 
-# Add documentation
-# Add a link to the website which specifies this link: <www.hello.com> 
+# GeoDB Cities API documentation
+# http://geodb-cities-api.wirefreethought.com/docs/guides/getting-cities-for-multiple-filters
 URL_GET_CITIES = "https://wft-geo-db.p.rapidapi.com/v1/geo/cities"
 
 class CitiesClient: 
@@ -27,16 +27,15 @@ class CitiesClient:
         # Map the request.Response to custom data Class
         cities = []
         for city_data in response["data"]:
-            
-            # Todo: Raise KeyError exception if expected keys are not present
             city = City(
-                city_data["id"],
+                city_data['id'],
                 city_data['name'],
                 city_data['latitude'],
                 city_data['longitude'],
                 city_data['population']
             )
 
+            city.validate()
             cities.append(city)
 
         return cities
@@ -67,10 +66,13 @@ class City:
     longitude: str
     population: str
 
+    # Validate that there is a value for every attribute
+    def validate(self):
+        for field in fields(self):
+            if getattr(self, field.name) is None:
+                raise KeyError(f'{field.name} not set')
 
-############################################
-api_key = 'b29f2328d6mshfe5d6639483b6a2p166f69jsn5c93c74e7d77'
-test = CitiesClient(load_config())
-params = GetCitiesParams(minPopulation='200000', offset='100')
-data = test.get_cities_data(params)
-print(data)
+# test = CitiesClient(load_config())
+# params = GetCitiesParams(minPopulation='200000', offset='100')
+# data = test.get_cities_data(params)
+# print(data)

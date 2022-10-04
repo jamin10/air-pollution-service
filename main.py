@@ -1,127 +1,44 @@
 from asyncore import poll
 from nturl2path import url2pathname
+from client_pollution import *
+from client_cities import *
+from service import Service 
 import requests
 
 from config import load_config
 
+def set_city_parameters():
+    # Set parameters to specify city details
+    params = GetCitiesParams(
+                location = None, # Only cities near this location. Latitude/longitude in ISO-6709 format: ±DD.DDDD±DDD.DDDD
+                limit = None, # The maximum number of results to retrieve
+                countryIds = None, # Only cities in these countries (comma-delimited country codes or WikiData ids)
+                minPopulation = 30000, # Only cities having at least this population
+                maxPopulation = None, # Only cities having no more than this population
+                namePrefix = None, # Only cities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name as it appears in that language.
+                radius = None, # The location radius within which to find cities
+                distanceUnit = None, # The unit of distance to use: MI | KM
+                offset = None, # The zero-ary offset into the results
+                excludedCountryIds = None, # Only cities NOT in these countries (comma-delimited country codes or WikiData ids)
+                sort = None, # How to sort the results. Format: ±SORTFIELD,±SORTFIELD where SORT_FIELD = countryCode | elevation | name | population
+                timeZoneIds = None, # Only cities in these time-zones
+                asciiMode = None, # Display results using ASCII characters
+                languageCode = None, # Display results in this language
+                types = None # Only cities for these types (comma-delimited): CITY | ADM2
+    )
+    return params
 
 if __name__ == '__main__':
     # Load config
     config = load_config()
+    # Build clients
+    cities_client = CitiesClient(config)
+    pollution_client = PollutionClient(config)
+    service = Service(cities_client, pollution_client)
 
- # build client 1
- # build client 2 
+    # Run service
+    service.run(set_city_parameters())
+
 
  # build repo 
     # environment_varaibles to get username / password 
-
-
-# call service object 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# '''
-
-# class City:
-
-#     def __init__(self, name, latitude, longitude, population):
-#         self.name = name
-#         self.latitude = latitude
-#         self.longitude = longitude
-#         self.popultion = population
-#         self.pollution = {}
-
-#     def add_pollution(self, pollution):
-#         if type(pollution) is Pollution:
-#             self.pollution['dt'] = pollution.dt
-#             self.pollution['aqi'] = pollution.aqi
-#             self.pollution['components'] = pollution.components
-#         else:
-#             print('Must be a Pollution object')
-
-
-# class Pollution:
-
-#     def __init__(self, dt, aqi, components):
-#         self.dt = dt
-#         self.aqi = aqi
-#         self.components = components
-        
-
-# # GeoDB Cities API
-
-# url = "https://wft-geo-db.p.rapidapi.com/v1/geo/cities"
-
-# querystring = {"minPopulation":"400000"}
-
-# headers = {
-# 	"X-RapidAPI-Key": "b29f2328d6mshfe5d6639483b6a2p166f69jsn5c93c74e7d77",
-# 	"X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com"
-# }
-
-# response_GeoDB = requests.request("GET", url, headers=headers, params=querystring)
-# response_GeoDB = response_GeoDB.json()
-
-# data_GeoDB = response_GeoDB['data']
-
-# cities_data = []
-
-# for data in data_GeoDB:
-#     city_data = {}
-
-#     city_data['name'] = data['name']
-#     city_data['latitude'] = data['latitude']
-#     city_data['longitude'] = data['longitude']
-#     city_data['population'] = data['population']
-
-#     cities_data.append(city_data)
-
-
-# # OpenWeather API
-# API_key = '371506301b2009441f3135528150fb96'
-
-# combined_data = []
-
-# for data in cities_data:
-#     lat = data['latitude']
-#     lon = data['longitude']
-
-#     pollution_data = data
-
-#     url2 = f"http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid={API_key}"
-
-#     response_OW = requests.get(url2)
-#     response_OW = response_OW.json()
-
-#     pollution_data['dt'] = response_OW['list'][0]['dt']
-#     pollution_data['aqi'] = response_OW['list'][0]['main']['aqi']
-#     pollution_data['components'] = response_OW['list'][0]['components']
-
-#     combined_data.append(pollution_data)
-
-# print(combined_data)
-
-# '''
