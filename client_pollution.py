@@ -33,6 +33,8 @@ class PollutionClient:
                         response_OW['list'][0]['components']['pm10'],
                         response_OW['list'][0]['components']['nh3'])
 
+        pollution.validate()
+
         return pollution
 
 @dataclass
@@ -49,6 +51,12 @@ class Pollution:
     pm2_5: float
     pm10: float
     nh3: float
+
+    # Validate that there is a value for every attribute
+    def validate(self):
+        for field in fields(self):
+            if getattr(self, field.name) is None:
+                raise KeyError(f'{field.name} not set')
 
 # test = PollutionClient(load_config())
 # data = test.get_pollution_data()
