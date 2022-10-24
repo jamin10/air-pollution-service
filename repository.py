@@ -2,12 +2,6 @@ from curses import curs_set
 from config import load_config
 import psycopg2
 
-hostname = 'localhost'
-database = 'postgres'
-username = 'postgres'
-password = 'postgres'
-port_id = 5432
-
 class PostgreSqlRepository:
 
     def __init__(self, config):
@@ -17,17 +11,17 @@ class PostgreSqlRepository:
         self.password = config.db_password
         self.port_id = config.port_id
 
-    def create_tables(self):
+    def get_connection_variables(self) -> str:
+        connection_variables = f"host={self.hostname} dbname={self.database} user={self.username} \
+                                    password={self.password} port={self.port_id}"
+        return connection_variables
 
+    def create_tables(self):
         conn = None
         # Create connection to database
         try: 
             with psycopg2.connect(
-                host = self.hostname,
-                dbname = self.database,
-                user = self.username, 
-                password = self.password,
-                port = self.port_id
+                self.get_connection_variables()
                 ) as conn: 
 
                 with conn.cursor() as cur:
@@ -73,11 +67,7 @@ class PostgreSqlRepository:
         conn = None
         try:
             with psycopg2.connect(
-                host = self.hostname,
-                dbname = self.database,
-                user = self.username, 
-                password = self.password,
-                port = self.port_id
+                self.get_connection_variables()
                 ) as conn: 
 
                 with conn.cursor() as cur:
@@ -110,5 +100,3 @@ class PostgreSqlRepository:
 # test = PostgreSqlRepository(load_config())
 # test.create_tables()
 # test.insert_data()
-
-#                                                 component_id integer REFERENCES components(id) UNIQUE NOT NULL

@@ -19,7 +19,7 @@ def set_city_parameters():
                 namePrefix = None, # Only cities whose names start with this prefix. If languageCode is set, the prefix will be matched on the name as it appears in that language.
                 radius = None, # The location radius within which to find cities
                 distanceUnit = None, # The unit of distance to use: MI | KM
-                offset = 10, # The zero-ary offset into the results
+                offset = 15, # The zero-ary offset into the results
                 excludedCountryIds = None, # Only cities NOT in these countries (comma-delimited country codes or WikiData ids)
                 sort = None, # How to sort the results. Format: ±SORTFIELD,±SORTFIELD where SORT_FIELD = countryCode | elevation | name | population
                 timeZoneIds = None, # Only cities in these time-zones
@@ -40,7 +40,3 @@ if __name__ == '__main__':
 
     # Run service
     service.run(set_city_parameters())
-
-
- # build repo 
-    # environment_varaibles to get username / password 
